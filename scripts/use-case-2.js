@@ -24,7 +24,11 @@ export default function () {
         const user = generateUser()
         username = user.username
         password = user.password
-        const loginRes = http.get(`${BASE_URL}/user?username=${username}&password=${password}`)
+        const loginRes = http.get(`${BASE_URL}/user?username=${username}&password=${password}`, {
+            tags: {
+                name: 'login'
+            }
+        })
 
         check(loginRes, {
             'Login: status 200': (r) => r.status === 200
@@ -44,7 +48,11 @@ export default function () {
             const latAdjustment = getRandRange(-5, 5)
             const longAdjustment = getRandRange(-5, 5)
             const require = options[Math.floor(Math.random() * options.length)];
-            const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat+latAdjustment}&lon=${lon+longAdjustment}&require=${require}`)
+            const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat+latAdjustment}&lon=${lon+longAdjustment}&require=${require}`, {
+                tags: {
+                    name: 'recommendation'
+                }
+            })
 
             check(recommendationRes, {
                 'recommendations: status 200': (r) => r.status === 200

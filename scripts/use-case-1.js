@@ -25,7 +25,11 @@ export default function () {
         const user = generateUser()
         username = user.username
         password = user.password
-        const loginRes = http.get(`${BASE_URL}/user?username=${username}&password=${password}`)
+        const loginRes = http.get(`${BASE_URL}/user?username=${username}&password=${password}`, {
+            tags: {
+                name: 'login'
+            }
+        })
 
         check(loginRes, {
             'Login: status 200': (r) => r.status === 200
@@ -45,7 +49,11 @@ export default function () {
         // each session will get 2 recommendations with different require param
         for (let i = 0; i < 2; i++) {
             const require = options[Math.floor(Math.random() * options.length)];
-            const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat}&lon=${lon}&require=${require}`)
+            const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat}&lon=${lon}&require=${require}`, {
+                tags: {
+                    name: 'recommendation'
+                }
+            })
 
             check(recommendationRes, {
                 'recommendations: status 200': (r) => r.status === 200
@@ -70,7 +78,11 @@ export default function () {
     group('Reserve', function () {
         const inDate = 19 + getRandRange(-3, 3)
         const outDate = inDate + getRandRange(1, 3)
-        const availabilityRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`)
+        const availabilityRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`, {
+            tags: {
+                name: 'availability'
+            }
+        })
         check(availabilityRes, {
             'Reservation: status 200': (r) => r.status === 200,
         })
