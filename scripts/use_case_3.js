@@ -16,7 +16,7 @@ export const options = {
 
 const BASE_URL = 'http://localhost:5000'
 
-export default function () {
+export function use_case_3() {
     group('Get Random Hotels', function () {
         const inDate = 19 + getRandRange(-3, 3)
         const outDate = inDate + 2

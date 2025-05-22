@@ -16,9 +16,8 @@ export const options = {
 
 const BASE_URL = 'http://localhost:5000'
 
-export default function () {
+export function use_case_4() {
     let hotelId
-    let hotelsId = []
     let username
     let password
     let inDate
@@ -61,48 +60,12 @@ export default function () {
         const tHotels = randHotels.json()['features']
         const ra = Math.floor(Math.random() * tHotels.length)
         if(tHotels[ra]){
-            hotelsId.push(tHotels[ra]['id'])
+            hotelId = tHotels[ra]['id']
         }
 
         // think time
         sleep(1)
     })
-
-    group('Get Recommendations', function () {
-        const options = ["dis", "rate", "price"];
-
-        const lat = (Math.random() * 180) - 90
-        const lon = (Math.random() * 360) - 180;
-
-        const featureArr = []
-        // each session will get 2 recommendations with different require param
-        for (let i = 0; i < 2; i++) {
-            const require = options[Math.floor(Math.random() * options.length)];
-            const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat}&lon=${lon}&require=${require}`, {
-                tags: {
-                    name: 'recommendation'
-                }
-            })
-
-            check(recommendationRes, {
-                'recommendations: status 200': (r) => r.status === 200
-            })
-
-            featureArr.push(...recommendationRes.json()['features'])
-        }
-
-        hotelsId.push(featureArr[Math.floor(Math.random() * featureArr.length)]['id']);
-
-        // think time
-        sleep(1)
-    })
-
-    // check if the hotelsId array just has one element
-    if (hotelsId.length > 1){
-        hotelId = hotelsId[Math.floor(Math.random() * hotelsId.length)];
-    }else{
-        hotelId = hotelsId[0];
-    }
 
     group('Reserve', function () {
         const availabilityRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&inDate=2025-06-${inDate}&outDate=2025-06-${outDate}`, {

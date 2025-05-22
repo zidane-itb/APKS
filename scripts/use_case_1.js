@@ -2,26 +2,14 @@ import http from 'k6/http'
 import { check, sleep, group } from 'k6'
 import {generateUser, getRandRange} from "./util.js";
 
-export const options = {
-    stages: [
-        { duration: '1m', target: 200 },
-        { duration: '2m', target: 200 },
-        { duration: '1m', target: 0 },
-    ],
-    thresholds: {
-        'http_req_duration': ['p(95)<10', 'p(99)<15'],
-        'checks': ['rate>0.9999'],
-    }
-}
-
 const BASE_URL = 'http://localhost:5000'
 
-export default function () {
-    let hotelId
+export function use_case_1() {
+    let hotel
     let username
     let password
 
-    group('Login', function () {
+    group('login', function () {
         const user = generateUser()
         username = user.username
         password = user.password
@@ -36,10 +24,10 @@ export default function () {
         })
 
         // think time
-        sleep(1)
+        sleep(2)
     })
 
-    group('Get Recommendations', function () {
+    group('recommendations', function () {
         const options = ["dis", "rate", "price"];
 
         const lat = (Math.random() * 180) - 90
@@ -60,25 +48,18 @@ export default function () {
             })
 
             featureArr.push(...recommendationRes.json()['features'])
+
+            // think time
+            sleep(5)
         }
 
-        hotelId = featureArr[Math.floor(Math.random() * featureArr.length)]['id'];
-
-        // think time
-        sleep(1)
+        hotel = featureArr[Math.floor(Math.random() * featureArr.length)];
     })
 
-    // only reserve 30% of the time
-    if (Math.random() > 0.30) {
-        // pacing
-        sleep(2)
-        return
-    }
-
-    group('Reserve', function () {
+    group('reserve', function () {
         const inDate = 19 + getRandRange(-3, 3)
         const outDate = inDate + getRandRange(1, 3)
-        const availabilityRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`, {
+        const availabilityRes = http.post(`${BASE_URL}/hotels?hotelId=${hotelId}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`, {
             tags: {
                 name: 'availability'
             }
@@ -94,5 +75,5 @@ export default function () {
     })
 
     // pacing
-    sleep(2)
+    sleep(10)
 }

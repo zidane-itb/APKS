@@ -16,7 +16,7 @@ export const options = {
 
 const BASE_URL = 'http://localhost:5000'
 
-export default function () {
+export function use_case_2() {
     let username
     let password
 
@@ -57,6 +57,8 @@ export default function () {
             check(recommendationRes, {
                 'recommendations: status 200': (r) => r.status === 200
             })
+            // think time
+            sleep(5)
         }
     })
 
