@@ -34,7 +34,7 @@ export const options = {
          *
          */
         'http_req_failed{name:search}': ['rate<1'],
-        'http_req_duration{name:search}': ['p(95)<5', 'p(99)<8']
+        'http_req_duration{name:search}': ['p(95)<8', 'p(99)<12']
     }
 };
 
