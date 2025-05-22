@@ -31,7 +31,7 @@ function formatDate(date) {
 export function getInAndOutDate() {
     const today = new Date();
     const maxEndDate = new Date();
-    maxEndDate.setDate(today.getDate() + 100);
+    maxEndDate.setDate(today.getDate() + 500);
 
     const todayTimestamp = today.getTime();
     const maxEndTimestamp = maxEndDate.getTime();

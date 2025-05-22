@@ -1,5 +1,5 @@
 import http from 'k6/http'
-import { check, sleep, group } from 'k6'
+import {check, sleep, group} from 'k6'
 import {generateUser, getInAndOutDate} from "./util.js";
 
 const BASE_URL = 'http://localhost:5000'
@@ -13,11 +13,13 @@ export function use_case_1() {
         const user = generateUser()
         username = user.username
         password = user.password
-        const loginRes = http.get(`${BASE_URL}/user?username=${username}&password=${password}`, {
-            tags: {
-                name: 'login'
-            }
-        })
+        const loginRes = http.get(`${BASE_URL}/user?username=${username}&password=${password}`,
+            null,
+            {
+                tags: {
+                    name: 'login'
+                }
+            })
 
         check(loginRes, {
             'Login: status 200': (r) => r.status === 200
@@ -37,11 +39,13 @@ export function use_case_1() {
         // each session will get 2 recommendations with different require param
         for (let i = 0; i < 2; i++) {
             const require = options[Math.floor(Math.random() * options.length)];
-            const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat}&lon=${lon}&require=${require}`, {
-                tags: {
-                    name: 'recommendation'
-                }
-            })
+            const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat}&lon=${lon}&require=${require}`,
+                null,
+                {
+                    tags: {
+                        name: 'recommendation'
+                    }
+                })
 
             check(recommendationRes, {
                 'recommendations: status 200': (r) => r.status === 200
@@ -60,17 +64,20 @@ export function use_case_1() {
         const {inDate, outDate} = getInAndOutDate()
         const lat = hotel['address']['lat']
         const lon = hotel['address']['lon']
-        const availabilityRes = http.post(`${BASE_URL}/hotels?lat=${lat}&lon=${lon}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`, {
-            tags: {
-                name: 'availability'
-            }
-        })
+        const availabilityRes = http.post(`${BASE_URL}/hotels?lat=${lat}&lon=${lon}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`,
+            null,
+            {
+                tags: {
+                    name: 'availability'
+                }
+            })
         check(availabilityRes, {
             'Reservation: status 200': (r) => r.status === 200,
         })
 
         const hotelId = hotel['id']
         const reservationRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&customerName=cornell&username=${username}&password=${password}&number=1&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`,
+            null,
             {
                 tags: {
                     name: 'reservation'

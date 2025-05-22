@@ -4,7 +4,8 @@ import {use_case_3} from "./use_case_3.js";
 import {use_case_4} from "./use_case_4.js";
 import {use_case_5} from "./use_case_5.js";
 
-const PEAK_CONCURRENT_USERS = 600
+const TOTAL_USERS = 5000
+const PEAK_CONCURRENT_USERS = 0.6 * TOTAL_USERS
 const USE_CASE_1_PERCENTAGE = 0.2
 const USE_CASE_2_PERCENTAGE = 0.45
 const USE_CASE_3_PERCENTAGE = 0.3

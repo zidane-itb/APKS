@@ -1,12 +1,12 @@
 import http from 'k6/http'
-import { check, sleep, group } from 'k6'
+import {check, sleep, group} from 'k6'
 import {generateUser, getRandRange} from "./util.js";
 
 export const options = {
     stages: [
-        { duration: '1m', target: 200 },
-        { duration: '2m', target: 200 },
-        { duration: '1m', target: 0 },
+        {duration: '1m', target: 200},
+        {duration: '2m', target: 200},
+        {duration: '1m', target: 0},
     ],
     thresholds: {
         'http_req_duration': ['p(95)<10', 'p(99)<15'],
@@ -24,11 +24,13 @@ export function use_case_2() {
         const user = generateUser()
         username = user.username
         password = user.password
-        const loginRes = http.get(`${BASE_URL}/user?username=${username}&password=${password}`, {
-            tags: {
-                name: 'login'
-            }
-        })
+        const loginRes = http.get(`${BASE_URL}/user?username=${username}&password=${password}`,
+            null,
+            {
+                tags: {
+                    name: 'login'
+                }
+            })
 
         check(loginRes, {
             'Login: status 200': (r) => r.status === 200
@@ -48,11 +50,13 @@ export function use_case_2() {
             const latAdjustment = getRandRange(-5, 5)
             const longAdjustment = getRandRange(-5, 5)
             const require = options[Math.floor(Math.random() * options.length)];
-            const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat+latAdjustment}&lon=${lon+longAdjustment}&require=${require}`, {
-                tags: {
-                    name: 'recommendation'
-                }
-            })
+            const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat + latAdjustment}&lon=${lon + longAdjustment}&require=${require}`,
+                null,
+                {
+                    tags: {
+                        name: 'recommendation'
+                    }
+                })
 
             check(recommendationRes, {
                 'recommendations: status 200': (r) => r.status === 200
