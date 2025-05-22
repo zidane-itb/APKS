@@ -62,8 +62,9 @@ export function use_case_1() {
 
     group('reserve', function () {
         const {inDate, outDate} = getInAndOutDate()
-        const lat = hotel['address']['lat']
-        const lon = hotel['address']['lon']
+        const coordinates = hotel['geometry']['coordinates']
+        const lat = coordinates[0]
+        const lon = coordinates[1]
         const availabilityRes = http.post(`${BASE_URL}/hotels?lat=${lat}&lon=${lon}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`,
             null,
             {

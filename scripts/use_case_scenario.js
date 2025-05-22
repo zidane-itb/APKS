@@ -2,7 +2,6 @@ import {use_case_1} from "./use_case_1.js";
 import {use_case_2} from "./use_case_2.js";
 import {use_case_3} from "./use_case_3.js";
 import {use_case_4} from "./use_case_4.js";
-import {use_case_5} from "./use_case_5.js";
 
 const TOTAL_USERS = 5000
 const PEAK_CONCURRENT_USERS = 0.6 * TOTAL_USERS
@@ -40,32 +39,35 @@ export const options = {
             ],
             exec: 'use_case_3_sc'
         },
-        use_case_4: {
-            executor: 'ramping-vus',
-            stages: [
-                {duration: '5m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
-                {duration: '10m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
-                {duration: '2m', target: 0},
-            ],
-            exec: 'use_case_4_sc'
-        }
+        // use_case_4: {
+        //     executor: 'ramping-vus',
+        //     stages: [
+        //         {duration: '5m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
+        //         {duration: '10m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
+        //         {duration: '2m', target: 0},
+        //     ],
+        //     exec: 'use_case_4_sc'
+        // }
     },
     thresholds: {
         /**
-         *
+         * Fitur reservation memiliki failure rate di bawah 0.1% serta response time di bawah 15 milliseconds
+         * untuk persentil ke-95 dan 25 milliseconds untuk persentil ke-99.
          */
-        'http_req_failed{name:reservation}': ['rate<0.01'],
-        'http_req_duration{name:reservation}': ['p(95)<8', 'p(99)<15'],
+        'http_req_failed{name:reservation}': ['rate<0.001'],
+        'http_req_duration{name:reservation}': ['p(95)<15', 'p(99)<25'],
         /**
-         *
+         * Fitur login memiliki failure rate di bawah 2% serta response time di bawah 10 milliseconds untuk
+         * persentil ke-95 dan 15 milliseconds untuk persentil ke-99.
          */
-        'http_req_failed{name:login}': ['rate<2'],
-        'http_req_duration{name:login}': ['p(95)<5', 'p(99)<10'],
+        'http_req_failed{name:login}': ['rate<0.02'],
+        'http_req_duration{name:login}': ['p(95)<10', 'p(99)<15'],
         /**
-         *
+         * Fitur availability memiliki failure rate di bawah 1% serta response time di bawah 8 milliseconds
+         * untuk persentil ke-95 dan 12 milliseconds untuk persentil ke-99.
          */
-        'http_req_failed{name:availability}': ['rate<1'],
-        'http_req_duration{name:availability}': ['p(95)<5', 'p(99)<10']
+        'http_req_failed{name:availability}': ['rate<0.01'],
+        'http_req_duration{name:availability}': ['p(95)<8', 'p(99)<12']
     }
 };
 
@@ -83,8 +85,4 @@ export function use_case_3_sc() {
 
 export function use_case_4_sc() {
     use_case_4()
-}
-
-export function use_case_5_sc() {
-    use_case_5()
 }

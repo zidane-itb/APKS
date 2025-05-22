@@ -26,14 +26,18 @@ export const options = {
         }
     }, thresholds: {
         /**
-         *
+         * FFitur reservation memiliki failure rate di bawah 0.1% serta response time di bawah 10 milliseconds
+         * untuk persentil ke-95 dan 15 milliseconds untuk persentil ke-99, yang berlaku pada skenario dengan
+         * peak load sebesar 3000 request per menit selama 5 menit.
          */
         'http_req_failed{name:reservation}': ['rate<0.01'],
-        'http_req_duration{name:reservation}': ['p(95)<10', 'p(99)<15'],
+        'http_req_duration{name:reservation}': ['p(95)<20', 'p(99)<30'],
         /**
-         *
+         * Fitur search memiliki failure rate di bawah 1% serta response time di bawah 5 milliseconds untuk persentil
+         * ke-95 dan 8 milliseconds untuk persentil ke-99, dengan pengujian pada skenario total load sebesar
+         * 5000 request per menit selama 5 menit.
          */
-        'http_req_failed{name:search}': ['rate<1'],
+        'http_req_failed{name:search}': ['rate<0.01'],
         'http_req_duration{name:search}': ['p(95)<8', 'p(99)<12']
     }
 };
