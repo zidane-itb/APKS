@@ -16,7 +16,7 @@ export const options = {
 
 const BASE_URL = 'http://localhost:5000'
 
-export function use_case_4() {
+export default function use_case_4() {
     let hotelId
     let username
     let password
@@ -69,21 +69,21 @@ export function use_case_4() {
         sleep(1)
     })
 
-    group('Reserve', function () {
-        const availabilityRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&inDate=2025-06-${inDate}&outDate=2025-06-${outDate}`,
+    if(!hotelId) {
+        sleep(2)
+        return;
+    }
+
+    group('Reviews', function () {
+        const reviewsHotels = http.get(`${BASE_URL}/review?hotelId=${hotelId}&username=${username}&password=${password}`,
             null,
             {
                 tags: {
-                    name: 'availability'
+                    name: 'reviews'
                 }
             })
-        check(availabilityRes, {
-            'Reservation: status 200': (r) => r.status === 200,
-        })
-
-        const reservationRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&customerName=cornell&username=${username}&password=${password}&number=1&inDate=2015-04-${inDate}&outDate=2015-04-${outDate}`)
-        check(reservationRes, {
-            'Reservation: status 200': (r) => r.status === 200,
+        check(reviewsHotels, {
+            'Get params: status 200': (r) => r.status === 200,
         })
     })
 
