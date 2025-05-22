@@ -13,7 +13,7 @@ export function use_case_1() {
         const user = generateUser()
         username = user.username
         password = user.password
-        const loginRes = http.get(`${BASE_URL}/user?username=${username}&password=${password}`,
+        const loginRes = http.post(`${BASE_URL}/user?username=${username}&password=${password}`,
             null,
             {
                 tags: {
@@ -40,7 +40,6 @@ export function use_case_1() {
         for (let i = 0; i < 2; i++) {
             const require = options[Math.floor(Math.random() * options.length)];
             const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat}&lon=${lon}&require=${require}`,
-                null,
                 {
                     tags: {
                         name: 'recommendation'
