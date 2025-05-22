@@ -19,3 +19,31 @@ export function getRandRange(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
+export function getInAndOutDate() {
+    const today = new Date();
+    const maxEndDate = new Date();
+    maxEndDate.setDate(today.getDate() + 100);
+
+    const todayTimestamp = today.getTime();
+    const maxEndTimestamp = maxEndDate.getTime();
+
+    let timestamp1 = todayTimestamp + Math.random() * (maxEndTimestamp - todayTimestamp);
+    let timestamp2 = todayTimestamp + Math.random() * (maxEndTimestamp - todayTimestamp);
+
+    let inTimestamp = Math.min(timestamp1, timestamp2);
+    let outTimestamp = Math.max(timestamp1, timestamp2);
+
+    const inDate = formatDate(new Date(inTimestamp));
+    const outDate = formatDate(new Date(outTimestamp));
+
+    return { inDate, outDate };
+}

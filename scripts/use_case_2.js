@@ -20,7 +20,7 @@ export function use_case_2() {
     let username
     let password
 
-    group('Login', function () {
+    group('login', function () {
         const user = generateUser()
         username = user.username
         password = user.password
@@ -38,7 +38,7 @@ export function use_case_2() {
         sleep(1)
     })
 
-    group('Get Recommendations', function () {
+    group('recommendations', function () {
         const options = ["dis", "rate", "price"];
 
         const lat = (Math.random() * 180) - 90

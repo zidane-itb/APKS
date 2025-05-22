@@ -6,10 +6,9 @@ import {use_case_5} from "./use_case_5.js";
 
 const PEAK_CONCURRENT_USERS = 600
 const USE_CASE_1_PERCENTAGE = 0.2
-const USE_CASE_2_PERCENTAGE = 0.4
-const USE_CASE_3_PERCENTAGE = 0.2
-const USE_CASE_4_PERCENTAGE = 0
-const USE_CASE_5_PERCENTAGE = 0
+const USE_CASE_2_PERCENTAGE = 0.45
+const USE_CASE_3_PERCENTAGE = 0.3
+const USE_CASE_4_PERCENTAGE = 0.05
 
 export const options = {
     scenarios: {
@@ -40,29 +39,32 @@ export const options = {
             ],
             exec: 'use_case_3_sc'
         },
-        // use_case_4: {
-        //     executor: 'ramping-vus',
-        //     stages: [
-        //         {duration: '5m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
-        //         {duration: '10m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
-        //         {duration: '2m', target: 0},
-        //     ],
-        //     exec: 'use_case_4_sc'
-        // },
-        // use_case_5: {
-        //     executor: 'ramping-vus',
-        //     stages: [
-        //         {duration: '5m', target: USE_CASE_5_PERCENTAGE * PEAK_CONCURRENT_USERS},
-        //         {duration: '10m', target: USE_CASE_5_PERCENTAGE * PEAK_CONCURRENT_USERS},
-        //         {duration: '2m', target: 0},
-        //     ],
-        //     exec: 'use_case_5_sc'
-        // }
+        use_case_4: {
+            executor: 'ramping-vus',
+            stages: [
+                {duration: '5m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
+                {duration: '10m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
+                {duration: '2m', target: 0},
+            ],
+            exec: 'use_case_4_sc'
+        }
     },
     thresholds: {
-        'http_req_duration': ['p(95)<20', 'p(99)<50'],
-        'checks': ['rate>0.95'],
-        'http_req_failed{group_name:booking}': ['rate<0.01'],
+        /**
+         *
+         */
+        'http_req_failed{name:reservation}': ['rate<0.01'],
+        'http_req_duration{name:reservation}': ['p(95)<8', 'p(99)<15'],
+        /**
+         *
+         */
+        'http_req_failed{name:login}': ['rate<2'],
+        'http_req_duration{name:login}': ['p(95)<5', 'p(99)<10'],
+        /**
+         *
+         */
+        'http_req_failed{name:availability}': ['rate<1'],
+        'http_req_duration{name:availability}': ['p(95)<5', 'p(99)<10']
     }
 };
 

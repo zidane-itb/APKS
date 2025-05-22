@@ -1,6 +1,6 @@
 import http from 'k6/http'
 import { check, sleep, group } from 'k6'
-import {generateUser, getRandRange} from "./util.js";
+import {generateUser, getInAndOutDate} from "./util.js";
 
 const BASE_URL = 'http://localhost:5000'
 
@@ -57,9 +57,10 @@ export function use_case_1() {
     })
 
     group('reserve', function () {
-        const inDate = 19 + getRandRange(-3, 3)
-        const outDate = inDate + getRandRange(1, 3)
-        const availabilityRes = http.post(`${BASE_URL}/hotels?hotelId=${hotelId}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`, {
+        const {inDate, outDate} = getInAndOutDate()
+        const lat = hotel['address']['lat']
+        const lon = hotel['address']['lon']
+        const availabilityRes = http.post(`${BASE_URL}/hotels?lat=${lat}&lon=${lon}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`, {
             tags: {
                 name: 'availability'
             }
@@ -68,7 +69,13 @@ export function use_case_1() {
             'Reservation: status 200': (r) => r.status === 200,
         })
 
-        const reservationRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&customerName=cornell&username=${username}&password=${password}&number=1&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`)
+        const hotelId = hotel['id']
+        const reservationRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&customerName=cornell&username=${username}&password=${password}&number=1&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`,
+            {
+                tags: {
+                    name: 'reservation'
+                }
+            })
         check(reservationRes, {
             'Reservation: status 200': (r) => r.status === 200,
         })
@@ -77,3 +84,5 @@ export function use_case_1() {
     // pacing
     sleep(10)
 }
+
+
