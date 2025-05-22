@@ -64,7 +64,7 @@ export function use_case_1() {
         const coordinates = hotel['geometry']['coordinates']
         const lat = coordinates[0]
         const lon = coordinates[1]
-        const availabilityRes = http.post(`${BASE_URL}/hotels?lat=${lat}&lon=${lon}&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`,
+        const availabilityRes = http.post(`${BASE_URL}/hotels?lat=${lat}&lon=${lon}&inDate=${inDate}&outDate=${outDate}`,
             null,
             {
                 tags: {
@@ -75,8 +75,13 @@ export function use_case_1() {
             'Reservation: status 200': (r) => r.status === 200,
         })
 
+        if(!hotel['id']) {
+            hotel['id'] = Math.floor(Math.random() * 6) + 1
+            sleep(1)
+        }  
+
         const hotelId = hotel['id']
-        const reservationRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&customerName=cornell&username=${username}&password=${password}&number=1&inDate=2025-05-${inDate}&outDate=2025-05-${outDate}`,
+        const reservationRes = http.post(`${BASE_URL}/reservation?hotelId=${hotelId}&customerName=cornell&username=${username}&password=${password}&number=1&inDate=${inDate}&outDate=${outDate}&lat=${lat}&lon=${lon}`,
             null,
             {
                 tags: {

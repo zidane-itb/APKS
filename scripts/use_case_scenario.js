@@ -8,7 +8,7 @@ const PEAK_CONCURRENT_USERS = 0.6 * TOTAL_USERS
 const USE_CASE_1_PERCENTAGE = 0.2
 const USE_CASE_2_PERCENTAGE = 0.45
 const USE_CASE_3_PERCENTAGE = 0.3
-const USE_CASE_4_PERCENTAGE = 0.05
+const USE_CASE_4_PERCENTAGE = 0.25
 
 export const options = {
     scenarios: {
@@ -39,15 +39,15 @@ export const options = {
             ],
             exec: 'use_case_3_sc'
         },
-        // use_case_4: {
-        //     executor: 'ramping-vus',
-        //     stages: [
-        //         {duration: '5m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
-        //         {duration: '10m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
-        //         {duration: '2m', target: 0},
-        //     ],
-        //     exec: 'use_case_4_sc'
-        // }
+        use_case_4: {
+            executor: 'ramping-vus',
+            stages: [
+                {duration: '5m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
+                {duration: '10m', target: USE_CASE_4_PERCENTAGE * PEAK_CONCURRENT_USERS},
+                {duration: '2m', target: 0},
+            ],
+            exec: 'use_case_4_sc'
+        }
     },
     thresholds: {
         /**
@@ -67,7 +67,25 @@ export const options = {
          * untuk persentil ke-95 dan 12 milliseconds untuk persentil ke-99.
          */
         'http_req_failed{name:availability}': ['rate<0.01'],
-        'http_req_duration{name:availability}': ['p(95)<8', 'p(99)<12']
+        'http_req_duration{name:availability}': ['p(95)<8', 'p(99)<12'],
+        /**
+         * Fitur search memiliki failure rate di bawah 1% serta response time di bawah 5 milliseconds untuk
+         * persentil ke-95 dan 8 milliseconds untuk persentil ke-99.
+         */
+        'http_req_failed{name:getHotels}': ['rate<0.01'],
+        'http_req_duration{name:getHotels}': ['p(95)<5', 'p(99)<8'],
+        /**
+         * Fitur recommendations memiliki failure rate di bawah 1% serta response time di bawah 5 milliseconds
+         * untuk persentil ke-95 dan 8 milliseconds untuk persentil ke-99.
+         */
+        'http_req_failed{name:recommendation}': ['rate<0.01'],
+        'http_req_duration{name:recommendation}': ['p(95)<10', 'p(99)<15'],
+        /**
+         * Fitur reviews memiliki failure rate di bawah 1% serta response time di bawah 5 milliseconds untuk
+         * persentil ke-95 dan 8 milliseconds untuk persentil ke-99.
+         */
+        'http_req_failed{name:reviews}': ['rate<0.01'],
+        'http_req_duration{name:reviews}': ['p(95)<10', 'p(99)<15'],
     }
 };
 

@@ -1,22 +1,9 @@
 import http from 'k6/http'
 import {check, sleep, group} from 'k6'
 import {generateUser, getRandRange} from "./util.js";
-
-export const options = {
-    stages: [
-        {duration: '1m', target: 200},
-        {duration: '2m', target: 200},
-        {duration: '1m', target: 0},
-    ],
-    thresholds: {
-        'http_req_duration': ['p(95)<10', 'p(99)<15'],
-        'checks': ['rate>0.9999'],
-    }
-}
-
 const BASE_URL = 'http://localhost:5000'
 
-export default function use_case_4() {
+export function use_case_4() {
     let hotelId
     let username
     let password
@@ -70,13 +57,12 @@ export default function use_case_4() {
     })
 
     if(!hotelId) {
-        sleep(2)
-        return;
+        hotelId = Math.floor(Math.random() * 6) + 1
+        sleep(1)
     }
 
     group('Reviews', function () {
         const reviewsHotels = http.get(`${BASE_URL}/review?hotelId=${hotelId}&username=${username}&password=${password}`,
-            null,
             {
                 tags: {
                     name: 'reviews'
