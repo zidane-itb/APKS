@@ -9,6 +9,7 @@ export function use_case_4() {
     let password
     let inDate
     let outDate
+    let hotel
 
     group('Login', function () {
         const user = generateUser()
@@ -30,35 +31,41 @@ export function use_case_4() {
         sleep(1)
     })
 
-    group('Get Random Hotels', function () {
-        inDate = 19 + getRandRange(-3, 3)
-        outDate = inDate + 2
-        const lat = 38.0235 + (Math.floor(Math.random() * 482) - 240.5) / 1000.0;
-        const lon = -122.095 + (Math.floor(Math.random() * 326) - 157.0) / 1000.0;
-
-        const randHotels = http.get(`${BASE_URL}/hotels?inDate=2025-06-${inDate}&outDate=2025-06-${outDate}&lat=${lat}&lon=${lon}`, {
-            tags: {
-                name: 'getHotels'
+    group('recommendations', function () {
+            const options = ["dis", "rate", "price"];
+    
+            const lat = (Math.random() * 180) - 90
+            const lon = (Math.random() * 360) - 180;
+    
+            const featureArr = []
+            // each session will get 2 recommendations with different require param
+            for (let i = 0; i < 2; i++) {
+                const require = options[Math.floor(Math.random() * options.length)];
+                const recommendationRes = http.get(`${BASE_URL}/recommendations?lat=${lat}&lon=${lon}&require=${require}`,
+                    {
+                        tags: {
+                            name: 'recommendation'
+                        }
+                    })
+    
+                check(recommendationRes, {
+                    'recommendations: status 200': (r) => r.status === 200
+                })
+    
+                featureArr.push(...recommendationRes.json()['features'])
+    
+                // think time
+                sleep(5)
             }
-        })
-
-        check(randHotels, {
-            'Get Hotels: status 200': (r) => r.status === 200,
-        })
-
-        const tHotels = randHotels.json()['features']
-        const ra = Math.floor(Math.random() * tHotels.length)
-        if (tHotels[ra]) {
-            hotelId = tHotels[ra]['id']
-        }
-
-        // think time
-        sleep(1)
+    
+            hotel = featureArr[Math.floor(Math.random() * featureArr.length)];
     })
 
-    if(!hotelId) {
+    if(!hotel['id']) {
         hotelId = Math.floor(Math.random() * 6) + 1
         sleep(1)
+    }else {
+        hotelId = hotel['id']
     }
 
     group('Reviews', function () {
